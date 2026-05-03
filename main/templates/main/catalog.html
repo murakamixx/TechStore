@@ -1,0 +1,88 @@
+{% extends "main/base.html" %}
+{% block title %}Каталог | TechStore{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Каталог компьютерной техники</h1>
+
+<section class="card search-strip">
+    <form method="get" class="search-top-form">
+        <input type="text" name="q" value="{{ filters.q }}" placeholder="Поиск: ноутбук, видеокарта, SSD...">
+        <input type="hidden" name="category" value="{{ filters.category }}">
+        <input type="hidden" name="min_price" value="{{ filters.min_price }}">
+        <input type="hidden" name="max_price" value="{{ filters.max_price }}">
+        <input type="hidden" name="sort" value="{{ filters.sort }}">
+        <button class="btn btn-primary" type="submit">Найти</button>
+    </form>
+</section>
+
+<div class="catalog-layout">
+    <aside class="card filters">
+        <h3>Фильтрация и сортировка</h3>
+        <form method="get">
+            <input type="hidden" name="q" value="{{ filters.q }}">
+
+            <div class="field">
+                <label for="category">Категория</label>
+                <select id="category" name="category">
+                    <option value="">Все категории</option>
+                    {% for category in categories %}
+                        <option value="{{ category.slug }}" {% if filters.category == category.slug %}selected{% endif %}>
+                            {{ category.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="two-col">
+                <div class="field">
+                    <label for="min_price">Цена от</label>
+                    <input id="min_price" type="number" name="min_price" value="{{ filters.min_price }}" min="0">
+                </div>
+                <div class="field">
+                    <label for="max_price">Цена до</label>
+                    <input id="max_price" type="number" name="max_price" value="{{ filters.max_price }}" min="0">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="sort">Сортировка</label>
+                <select id="sort" name="sort">
+                    <option value="newest" {% if filters.sort == "newest" %}selected{% endif %}>Сначала новинки</option>
+                    <option value="oldest" {% if filters.sort == "oldest" %}selected{% endif %}>Сначала старые</option>
+                    <option value="price_asc" {% if filters.sort == "price_asc" %}selected{% endif %}>Цена по возрастанию</option>
+                    <option value="price_desc" {% if filters.sort == "price_desc" %}selected{% endif %}>Цена по убыванию</option>
+                    <option value="name_asc" {% if filters.sort == "name_asc" %}selected{% endif %}>Название А-Я</option>
+                    <option value="name_desc" {% if filters.sort == "name_desc" %}selected{% endif %}>Название Я-А</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Применить</button>
+        </form>
+    </aside>
+
+    <section>
+        <div class="products-grid">
+            {% for product in products %}
+                <article class="card product-card">
+                    <div class="product-image">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+                        {% else %}
+                            TECH PREVIEW
+                        {% endif %}
+                    </div>
+                    <div class="muted">{{ product.category.name }}</div>
+                    <h3 style="margin:0;">{{ product.name }}</h3>
+                    <div class="price">{{ product.price }} BYN</div>
+                    <div class="muted">Год: {{ product.release_year }} | В наличии: {{ product.stock }}</div>
+                    <a class="btn btn-ghost" href="{% url 'product_detail' product.id %}">Подробнее</a>
+                </article>
+            {% empty %}
+                <div class="card panel">
+                    По вашему запросу товары не найдены. Попробуйте изменить фильтры.
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

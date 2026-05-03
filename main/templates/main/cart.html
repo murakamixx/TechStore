@@ -1,0 +1,37 @@
+{% extends "main/base.html" %}
+{% block title %}Корзина | TechStore{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Корзина</h1>
+<div class="card panel">
+    {% if cart_items %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Кол-во</th>
+                    <th>Цена</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.product.price }} BYN</td>
+                        <td>{{ item.get_cost }} BYN</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div style="margin-top:1rem;display:flex;justify-content:space-between;align-items:center;">
+            <strong>Итого: {{ total_price }} BYN</strong>
+            <button type="button" class="btn btn-primary">Перейти к оформлению</button>
+        </div>
+    {% else %}
+        <p class="muted">Корзина пока пустая. Добавьте товары из каталога.</p>
+        <a href="{% url 'catalog' %}" class="btn btn-primary">Перейти в каталог</a>
+    {% endif %}
+</div>
+{% endblock %}

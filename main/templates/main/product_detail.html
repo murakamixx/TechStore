@@ -1,0 +1,42 @@
+{% extends "main/base.html" %}
+{% block title %}{{ product.name }} | TechStore{% endblock %}
+
+{% block content %}
+<div class="detail-layout">
+    <section class="card panel">
+        <div class="product-image detail-image">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+            {% else %}
+                PRODUCT IMAGE
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="card panel">
+        <div class="muted">{{ product.category.name }}</div>
+        <h1 style="margin-top:0.35rem;">{{ product.name }}</h1>
+        <div class="price">{{ product.price }} BYN</div>
+        <p class="muted">Год выпуска: {{ product.release_year }}</p>
+        <p>{{ product.description }}</p>
+        <p class="muted">Остаток на складе: {{ product.stock }} шт.</p>
+        <button class="btn btn-primary" type="button">Добавить в корзину</button>
+    </section>
+</div>
+
+<section style="margin-top:1.2rem;">
+    <h2 class="section-title">Похожие товары</h2>
+    <div class="products-grid">
+        {% for related in related_products %}
+            <article class="card product-card">
+                <div class="product-image">TECH PREVIEW</div>
+                <h3 style="margin:0;">{{ related.name }}</h3>
+                <div class="price">{{ related.price }} BYN</div>
+                <a class="btn btn-ghost" href="{% url 'product_detail' related.id %}">Открыть</a>
+            </article>
+        {% empty %}
+            <div class="card panel">Пока нет похожих товаров в этой категории.</div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

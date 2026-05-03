@@ -1,0 +1,37 @@
+{% extends "main/base.html" %}
+{% block title %}Личный кабинет | TechStore{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Личный кабинет</h1>
+<div class="profile-layout">
+    <aside class="card panel">
+        <h3 style="margin-top:0;">Профиль</h3>
+        <p><strong>Пользователь:</strong> {{ request.user.username|default:"guest" }}</p>
+        <p><strong>Email:</strong> {{ request.user.email|default:"not-set@example.com" }}</p>
+        <p class="muted">Здесь позже будет редактирование профиля, адреса, пароля и настроек.</p>
+    </aside>
+
+    <section class="card panel">
+        <h3 style="margin-top:0;">История заказов</h3>
+        <p class="muted">Список заказов появится после реализации бэкенд-логики оформления.</p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>№ заказа</th>
+                    <th>Дата</th>
+                    <th>Статус</th>
+                    <th>Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>#0000</td>
+                    <td>--.--.----</td>
+                    <td>Нет данных</td>
+                    <td>0.00 BYN</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+{% endblock %}

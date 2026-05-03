@@ -1,0 +1,22 @@
+{% extends "main/base.html" %}
+{% block title %}Вход | TechStore{% endblock %}
+
+{% block content %}
+<h1 class="section-title">Вход в аккаунт</h1>
+<div class="auth-single">
+    <section class="card panel">
+        <form>
+            <div class="field">
+                <label for="login-email">Email</label>
+                <input id="login-email" type="email" placeholder="you@example.com">
+            </div>
+            <div class="field">
+                <label for="login-password">Пароль</label>
+                <input id="login-password" type="password" placeholder="********">
+            </div>
+            <button type="button" class="btn btn-primary">Войти</button>
+        </form>
+        <p class="muted form-hint">Еще нет аккаунта? <a href="{% url 'register' %}" class="accent-link">Зарегистрироваться</a></p>
+    </section>
+</div>
+{% endblock %}
