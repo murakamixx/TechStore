@@ -3,35 +3,62 @@
 
 {% block content %}
 <h1 class="section-title">Личный кабинет</h1>
+
 <div class="profile-layout">
+
     <aside class="card panel">
-        <h3 style="margin-top:0;">Профиль</h3>
-        <p><strong>Пользователь:</strong> {{ request.user.username|default:"guest" }}</p>
-        <p><strong>Email:</strong> {{ request.user.email|default:"not-set@example.com" }}</p>
-        <p class="muted">Здесь позже будет редактирование профиля, адреса, пароля и настроек.</p>
+        <h3>Профиль</h3>
+        <div class="profile-info-row">
+            <span class="muted">Имя пользователя</span>
+            <strong>{{ request.user.username }}</strong>
+        </div>
+        <div class="profile-info-row">
+            <span class="muted">Email</span>
+            <span>{{ request.user.email|default:"не указан" }}</span>
+        </div>
+        <div class="profile-info-row">
+            <span class="muted">Телефон</span>
+            <span>{{ request.user.profile.phone|default:"не указан" }}</span>
+        </div>
+        <div class="profile-info-row">
+            <span class="muted">Адрес</span>
+            <span>{{ request.user.profile.address|default:"не указан" }}</span>
+        </div>
+        <hr class="cart-divider">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-ghost btn-full">Выйти из аккаунта</button>
+        </form>
     </aside>
 
     <section class="card panel">
-        <h3 style="margin-top:0;">История заказов</h3>
-        <p class="muted">Список заказов появится после реализации бэкенд-логики оформления.</p>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>№ заказа</th>
-                    <th>Дата</th>
-                    <th>Статус</th>
-                    <th>Сумма</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>#0000</td>
-                    <td>--.--.----</td>
-                    <td>Нет данных</td>
-                    <td>0.00 BYN</td>
-                </tr>
-            </tbody>
-        </table>
+        <h3>История заказов</h3>
+        {% if orders %}
+            {% for order in orders %}
+                <div class="order-card">
+                    <div class="order-header">
+                        <span><strong>Заказ #{{ order.pk }}</strong></span>
+                        <span class="order-status order-status-{{ order.status }}">{{ order.get_status_display }}</span>
+                        <span class="muted">{{ order.created_at|date:"d.m.Y H:i" }}</span>
+                        <span class="price">{{ order.total_price }} BYN</span>
+                    </div>
+                    <div class="order-items">
+                        {% for item in order.items.all %}
+                            <div class="order-item-row">
+                                <span>{{ item.product_name }}</span>
+                                <span class="muted">× {{ item.quantity }}</span>
+                                <span>{{ item.get_cost }} BYN</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if not forloop.last %}<hr class="cart-divider">{% endif %}
+            {% endfor %}
+        {% else %}
+            <p class="muted">Вы ещё не делали заказов.</p>
+            <a href="{% url 'catalog' %}" class="btn btn-primary">Перейти в каталог</a>
+        {% endif %}
     </section>
+
 </div>
 {% endblock %}

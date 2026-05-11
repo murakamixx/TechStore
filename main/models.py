@@ -106,3 +106,42 @@ class Review(models.Model):
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
         ordering = ['-created_at']
+
+
+# Заказы
+
+class Order(models.Model):
+    STATUS_PENDING = "pending"
+    STATUS_PAID = "paid"
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "Ожидает оплаты"),
+        (STATUS_PAID, "Оплачен"),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="orders", verbose_name="Покупатель")
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING, verbose_name="Статус")
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма заказа")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Заказ"
+        verbose_name_plural = "Заказы"
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Заказ #{self.pk} — {self.user.username}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="items", verbose_name="Заказ")
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Товар")
+    product_name = models.CharField(max_length=255, verbose_name="Название на момент заказа")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена на момент заказа")
+    quantity = models.PositiveIntegerField(verbose_name="Количество")
+
+    def get_cost(self):
+        return self.price * self.quantity
+
+    class Meta:
+        verbose_name = "Позиция заказа"
+        verbose_name_plural = "Позиции заказа"

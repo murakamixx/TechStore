@@ -14,7 +14,7 @@
     --radius-sm:    10px;
 }
 
-/* ─── Сброс и база ───────────────────────────────────────────────────────── */
+
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -47,16 +47,18 @@ a {
 img {
     display: block;
     max-width: 100%;
+    height: auto;
 }
 
-/* ─── Контейнер ──────────────────────────────────────────────────────────── */
+
 
 .container {
     width: min(1200px, 92vw);
+    max-width: 100%;
     margin: 0 auto;
+    box-sizing: border-box;
 }
 
-/* ─── Шапка ──────────────────────────────────────────────────────────────── */
 
 .site-header {
     position: sticky;
@@ -102,23 +104,48 @@ img {
     color: var(--text);
 }
 
-/* Кнопка «Выйти» стилизована как ссылка */
+
+.main-nav > form {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+
 .nav-logout-btn {
-    background: none;
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    background: transparent;
     border: none;
     padding: 0;
     color: var(--muted);
     font: inherit;
+    font-size: inherit;
     font-weight: 500;
+    line-height: inherit;
+    font-family: inherit;
+    letter-spacing: inherit;
     cursor: pointer;
     transition: color 0.18s;
+    white-space: nowrap;
+    text-align: left;
 }
 
-.nav-logout-btn:hover {
+.main-nav .nav-logout-btn:hover,
+.main-nav .nav-logout-btn:focus-visible {
     color: var(--danger);
+    outline: none;
 }
 
-/* ─── Flash-сообщения ────────────────────────────────────────────────────── */
+.main-nav .nav-logout-btn:focus-visible {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+
 
 .messages-wrap {
     margin-top: 1rem;
@@ -139,10 +166,16 @@ img {
 .message-warning { border-color: #f0a500;         color: #f0a500; }
 .message-error   { border-color: var(--danger);   color: var(--danger); }
 
-/* ─── Основной контент ───────────────────────────────────────────────────── */
+
 
 .main-content {
     padding: 2rem 0 4rem;
+    min-width: 0;
+}
+
+
+.catalog-layout > section {
+    min-width: 0;
 }
 
 .section-title {
@@ -151,7 +184,7 @@ img {
     font-weight: 800;
 }
 
-/* ─── Карточки (базовый блок) ────────────────────────────────────────────── */
+
 
 .card {
     background: linear-gradient(160deg, var(--surface) 0%, #12151c 100%);
@@ -163,7 +196,6 @@ img {
     padding: 1.25rem;
 }
 
-/* ─── Кнопки ─────────────────────────────────────────────────────────────── */
 
 .btn {
     display: inline-flex;
@@ -210,7 +242,6 @@ img {
     width: 100%;
 }
 
-/* ─── Поля форм ──────────────────────────────────────────────────────────── */
 
 .field {
     margin-bottom: 1rem;
@@ -251,7 +282,6 @@ textarea:focus {
     font-size: 0.85rem;
 }
 
-/* ─── Страницы логина / регистрации ──────────────────────────────────────── */
 
 .auth-page {
     display: flex;
@@ -285,7 +315,6 @@ textarea:focus {
     color: var(--accent-dark);
 }
 
-/* ─── Каталог: поисковая строка ─────────────────────────────────────────── */
 
 .search-strip {
     padding: 1rem;
@@ -298,16 +327,15 @@ textarea:focus {
     gap: 0.75rem;
 }
 
-/* ─── Каталог: общий лейаут ─────────────────────────────────────────────── */
 
 .catalog-layout {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    /* minmax(0, …) — иначе широкие картинки раздувают колонку сетки */
+    grid-template-columns: minmax(0, 280px) minmax(0, 1fr);
     gap: 1.25rem;
     align-items: start;
 }
 
-/* ─── Сайдбар фильтров ───────────────────────────────────────────────────── */
 
 .filters {
     padding: 1.25rem;
@@ -325,30 +353,35 @@ textarea:focus {
     gap: 0.75rem;
 }
 
-/* ─── Сетка товаров ─────────────────────────────────────────────────────── */
 
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
     gap: 1rem;
+    min-width: 0;
 }
 
-/* ─── Карточка товара ────────────────────────────────────────────────────── */
 
 .product-card {
     padding: 0;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
 }
 
 /* Ссылка-обёртка для изображения */
 .product-image-link {
     display: block;
     flex-shrink: 0;
+    width: 100%;
+    min-width: 0;
 }
 
 .product-image {
+    width: 100%;
+    min-width: 0;
     height: 170px;
     background: linear-gradient(145deg, #252d40, #141822);
     display: flex;
@@ -358,7 +391,13 @@ textarea:focus {
 }
 
 .product-image img {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
+    object-position: center;
+    flex-shrink: 1;
     transition: transform 0.3s ease;
 }
 
@@ -404,7 +443,6 @@ textarea:focus {
     font-size: 0.83rem;
     line-height: 1.4;
     flex: 1;
-    /* Максимум 3 строки */
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
@@ -424,9 +462,17 @@ textarea:focus {
 .product-card-actions {
     display: flex;
     gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+    min-width: 0;
 }
 
-/* ─── Цена ───────────────────────────────────────────────────────────────── */
+.product-card-actions form {
+    display: inline-flex;
+    margin: 0;
+}
+
+
 
 .price {
     color: var(--accent);
@@ -439,41 +485,52 @@ textarea:focus {
     margin: 0.25rem 0 0.75rem;
 }
 
-/* ─── Страница товара ────────────────────────────────────────────────────── */
+
 
 .detail-layout {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 1.25rem;
+    min-width: 0;
 }
 
 .detail-image-wrap {
     padding: 0;
     overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .detail-image {
-    height: 420px;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: clamp(220px, 42vw, 420px);
     border-radius: var(--radius);
 }
 
 .detail-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
+    background: linear-gradient(145deg, #252d40, #141822);
 }
 
 .related-section {
     margin-top: 2rem;
+    min-width: 0;
 }
 
-/* ─── Корзина ────────────────────────────────────────────────────────────── */
+
 
 .cart-layout {
     display: grid;
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
     gap: 1.25rem;
     align-items: start;
+    min-width: 0;
 }
 
 .cart-item {
@@ -580,7 +637,7 @@ textarea:focus {
     margin: 0;
 }
 
-/* Сводка */
+
 .cart-summary h3 {
     margin-bottom: 1rem;
 }
@@ -601,7 +658,7 @@ textarea:focus {
     margin-bottom: 1.25rem;
 }
 
-/* ─── Оформление заказа ─────────────────────────────────────────────────── */
+
 
 .checkout-box {
     width: 100%;
@@ -628,13 +685,14 @@ textarea:focus {
     font-size: 1.05rem;
 }
 
-/* ─── Личный кабинет ─────────────────────────────────────────────────────── */
+
 
 .profile-layout {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
     gap: 1.25rem;
     align-items: start;
+    min-width: 0;
 }
 
 .profile-info-row {
@@ -651,7 +709,7 @@ textarea:focus {
     text-transform: uppercase;
 }
 
-/* История заказов */
+
 .order-card {
     padding: 0.75rem 0;
 }
@@ -694,7 +752,7 @@ textarea:focus {
     flex: 1;
 }
 
-/* ─── Вспомогательные ────────────────────────────────────────────────────── */
+
 
 .muted {
     color: var(--muted);
@@ -707,7 +765,7 @@ textarea:focus {
     color: var(--muted);
 }
 
-/* ─── Таблицы ────────────────────────────────────────────────────────────── */
+
 
 .table {
     width: 100%;
@@ -729,11 +787,11 @@ textarea:focus {
     letter-spacing: 0.04em;
 }
 
-/* ─── Адаптив ────────────────────────────────────────────────────────────── */
+
 
 @media (max-width: 1024px) {
     .catalog-layout {
-        grid-template-columns: 240px 1fr;
+        grid-template-columns: minmax(0, 240px) minmax(0, 1fr);
     }
 
     .cart-layout {

@@ -1,0 +1,44 @@
+{% extends "main/base.html" %}
+{% block title %}Оформление заказа | TechStore{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="checkout-box">
+        <h1 class="section-title">Оформление заказа</h1>
+
+        <section class="card panel">
+            <h3>Состав заказа</h3>
+            {% for item in cart_items %}
+                <div class="checkout-item">
+                    <span class="checkout-item-name">{{ item.product.name }}</span>
+                    <span class="muted">× {{ item.quantity }}</span>
+                    <span class="price">{{ item.get_cost }} BYN</span>
+                </div>
+                {% if not forloop.last %}<hr class="cart-divider">{% endif %}
+            {% endfor %}
+
+            <div class="checkout-total">
+                <strong>Итого: <span class="price">{{ total_price }} BYN</span></strong>
+            </div>
+        </section>
+
+        <section class="card panel" style="margin-top: 1rem;">
+            <h3>Данные для доставки</h3>
+            <div class="field">
+                <label>Адрес доставки</label>
+                <input type="text" value="{{ request.user.profile.address }}" disabled placeholder="Укажите адрес в профиле">
+            </div>
+            <p class="muted" style="font-size: 0.9rem;">
+                Тут типо оплата
+            </p>
+
+            <form method="post" action="{% url 'payment' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Оплатить {{ total_price }} BYN</button>
+                <a href="{% url 'cart' %}" class="btn btn-ghost" style="margin-left: 0.5rem;">Назад</a>
+            </form>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

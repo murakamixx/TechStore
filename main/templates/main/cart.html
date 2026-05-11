@@ -3,35 +3,63 @@
 
 {% block content %}
 <h1 class="section-title">Корзина</h1>
-<div class="card panel">
-    {% if cart_items %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Товар</th>
-                    <th>Кол-во</th>
-                    <th>Цена</th>
-                    <th>Сумма</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart_items %}
-                    <tr>
-                        <td>{{ item.product.name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.product.price }} BYN</td>
-                        <td>{{ item.get_cost }} BYN</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div style="margin-top:1rem;display:flex;justify-content:space-between;align-items:center;">
-            <strong>Итого: {{ total_price }} BYN</strong>
-            <button type="button" class="btn btn-primary">Перейти к оформлению</button>
-        </div>
-    {% else %}
-        <p class="muted">Корзина пока пустая. Добавьте товары из каталога.</p>
+
+{% if cart_items %}
+    <div class="cart-layout">
+
+        <section class="card panel">
+            {% for item in cart_items %}
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                        {% else %}
+                            <span class="product-image-placeholder">IMG</span>
+                        {% endif %}
+                    </div>
+                    <div class="cart-item-info">
+                        <a href="{% url 'product_detail' item.product.id %}" class="cart-item-name">
+                            {{ item.product.name }}
+                        </a>
+                        <div class="muted">{{ item.product.price }} BYN × {{ item.quantity }}</div>
+                    </div>
+                    <div class="cart-item-controls">
+                        <form method="post" action="{% url 'cart_update' item.id %}" class="qty-form">
+                            {% csrf_token %}
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'-1' }}" class="qty-btn">−</button>
+                            <span class="qty-value">{{ item.quantity }}</span>
+                            <button type="submit" name="quantity" value="{{ item.quantity|add:'1' }}" class="qty-btn">+</button>
+                        </form>
+                        <div class="cart-item-total">{{ item.get_cost }} BYN</div>
+                        <form method="post" action="{% url 'cart_remove' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove" title="Удалить">✕</button>
+                        </form>
+                    </div>
+                </div>
+                {% if not forloop.last %}<hr class="cart-divider">{% endif %}
+            {% endfor %}
+        </section>
+
+        <aside class="card panel cart-summary">
+            <h3>Итого</h3>
+            <div class="summary-row">
+                <span class="muted">Товаров:</span>
+                <span>{{ cart_items|length }} шт.</span>
+            </div>
+            <div class="summary-row summary-total">
+                <span>Сумма:</span>
+                <span class="price">{{ total_price }} BYN</span>
+            </div>
+            <a href="{% url 'checkout' %}" class="btn btn-primary btn-full">Перейти к оплате</a>
+        </aside>
+
+    </div>
+
+{% else %}
+    <div class="card panel empty-state">
+        <p>Корзина пустая. Добавьте товары из каталога.</p>
         <a href="{% url 'catalog' %}" class="btn btn-primary">Перейти в каталог</a>
-    {% endif %}
-</div>
+    </div>
+{% endif %}
 {% endblock %}

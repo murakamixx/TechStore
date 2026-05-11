@@ -2,21 +2,31 @@
 {% block title %}Вход | TechStore{% endblock %}
 
 {% block content %}
-<h1 class="section-title">Вход в аккаунт</h1>
-<div class="auth-single">
-    <section class="card panel">
-        <form>
-            <div class="field">
-                <label for="login-email">Email</label>
-                <input id="login-email" type="email" placeholder="you@example.com">
-            </div>
-            <div class="field">
-                <label for="login-password">Пароль</label>
-                <input id="login-password" type="password" placeholder="********">
-            </div>
-            <button type="button" class="btn btn-primary">Войти</button>
+<div class="auth-page">
+    <div class="auth-box card panel">
+        <h1 class="auth-title">Вход</h1>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="field-error">{{ field.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}
+                <div class="field-error">{{ form.non_field_errors.0 }}</div>
+            {% endif %}
+            <button type="submit" class="btn btn-primary btn-full">Войти</button>
         </form>
-        <p class="muted form-hint">Еще нет аккаунта? <a href="{% url 'register' %}" class="accent-link">Зарегистрироваться</a></p>
-    </section>
+
+        <p class="auth-hint">
+            Нет аккаунта?
+            <a href="{% url 'register' %}" class="accent-link">Зарегистрируйтесь</a>
+        </p>
+    </div>
 </div>
 {% endblock %}
